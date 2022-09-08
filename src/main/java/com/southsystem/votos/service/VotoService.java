@@ -7,6 +7,8 @@ import com.southsystem.votos.entity.SessaoEntity;
 import com.southsystem.votos.entity.VotoEntity;
 import com.southsystem.votos.exception.NotFoundException;
 import com.southsystem.votos.exception.ValidationException;
+import com.southsystem.votos.integration.CpfClient;
+import com.southsystem.votos.integration.EnableVoteResponse;
 import com.southsystem.votos.producer.ResultadoProducer;
 import com.southsystem.votos.repository.AssociadoRepository;
 import com.southsystem.votos.repository.SessaoRepository;
@@ -35,9 +37,14 @@ public class VotoService {
     final AssociadoRepository associadoRepository;
     final SessaoRepository sessaoRepository;
     final ResultadoProducer resultadoProducer;
+    final CpfClient client;
+
+    private static final String UNABLE_TO_VOTE = "UNABLE_TO_VOTE";
 
     public void votar(VotoRequest request) {
         log.info("Registrando voto sessão:{}", request.getSessaoId());
+
+        validarCPF(request);
 
         var associado = associadoRepository.findByCpf(request.getCpf())
                 .orElseThrow(() -> new NotFoundException(ASSOCIADO_NAO_ENCONTRADO));
@@ -54,6 +61,22 @@ public class VotoService {
                 .sessao(sessao)
                 .voto(request.getVoto())
                 .build());
+    }
+
+    private void validarCPF(VotoRequest request) {
+        EnableVoteResponse resultado;
+
+        try {
+            resultado = client.consultarCpf(request.getCpf());
+        } catch (Exception e) {
+            throw new NotFoundException(CPF_INVALIDO);
+        }
+
+        if (resultado.getStatus().equals(UNABLE_TO_VOTE)) {
+            log.error("Associado não habilitado a votar");
+
+            throw new ValidationException(ASSOCIADO_NAO_HABILITADO);
+        }
     }
 
     private void verificarSeJaVotou(AssociadoEntity associado, SessaoEntity sessao) {

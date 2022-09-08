@@ -10,13 +10,15 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.southsystem.votos.exception.messages.ErrorsMessages.OBRIGATORIO;
+
 @Value
 @With
 @JsonDeserialize(builder = SessaoRequest.JacksonBuilder.class)
 @Builder(builderClassName = "JacksonBuilder")
 public class SessaoRequest {
 
-    @NotNull(message = "PautaId é obrigatória")
+    @NotNull(message = "PautaId" + OBRIGATORIO)
     UUID pautaId;
 
     LocalDateTime inicio;

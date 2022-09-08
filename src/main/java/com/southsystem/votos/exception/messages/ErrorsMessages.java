@@ -12,5 +12,8 @@ public class ErrorsMessages {
     public static final String TEMPO_EXCEDIDO = "Tempo limite de votação excedido";
     public static final String SESAO_NAO_INICIADA = "Sessão ainda não iniciada";
     public static final String ASSOCIADO_JA_VOTOU = "Só é permitido um voto por sessão";
+    public static final String ASSOCIADO_NAO_HABILITADO = "Associado não habilitado a votar";
+    public static final String CPF_INVALIDO = "CPF inválido";
+    public static final String OBRIGATORIO = " é obrigatório";
 
 }

@@ -1,4 +1,4 @@
-package com.southsystem.votos.dto;
+package com.southsystem.votos.integration;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -6,26 +6,13 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.With;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-
 @Value
 @With
-@JsonDeserialize(builder = ResultadoResponse.JacksonBuilder.class)
+@JsonDeserialize(builder = EnableVoteResponse.JacksonBuilder.class)
 @Builder(builderClassName = "JacksonBuilder")
-public class ResultadoResponse {
+public class EnableVoteResponse {
 
-    UUID pautaId;
-
-    String pautaTitulo;
-
-    long sim;
-
-    long nao;
-
-    BigDecimal simPercentual;
-
-    BigDecimal naoPercentual;
+    String status;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class JacksonBuilder {
