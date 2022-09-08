@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sa      
+    ports: 
+      - 5432:5432
+    networks:
+      - voto     
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbit_server
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - voto     
+  voto:
+    image: claudineiolsantos/voto:1.0.0
+    container_name: voto
+#    build:
+#      context: ./votos
+#      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always  
+    ports:
+      - 8080:8080
+    networks:
+      - voto        
+  
+networks:
+  voto:
+    driver: bridge    
+volumes:
+  esdata:
+    driver: local
